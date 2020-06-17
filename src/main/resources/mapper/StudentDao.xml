@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzxlq.score.dao.StudentDao">
+
+    <resultMap type="com.wzxlq.score.entity.Student" id="StudentMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="studentNum" column="student_num" jdbcType="VARCHAR"/>
+        <result property="studentName" column="student_name" jdbcType="VARCHAR"/>
+        <result property="className" column="class_name" jdbcType="VARCHAR"/>
+        <result property="term" column="term" jdbcType="VARCHAR"/>
+        <result property="courseNum" column="course_num" jdbcType="INTEGER"/>
+        <result property="flunkNum" column="flunk_num" jdbcType="INTEGER"/>
+        <result property="avgScore" column="avg_score" jdbcType="NUMERIC"/>
+        <result property="allScore" column="all_score" jdbcType="NUMERIC"/>
+        <result property="allCreditScore" column="all_credit_score" jdbcType="NUMERIC"/>
+        <result property="avgCredit" column="avg_credit" jdbcType="NUMERIC"/>
+        <result property="avgCreditPoint" column="avg_credit_point" jdbcType="NUMERIC"/>
+        <result property="majorRank" column="major_rank" jdbcType="INTEGER"/>
+        <result property="status" column="STATUS" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个 queryAllByClassAndTerm-->
+    <select id="queryById" resultMap="StudentMap">
+        select
+          id, student_num, student_name, class_name, term, course_num, flunk_num, avg_score, all_score, all_credit_score, avg_credit, avg_credit_point, major_rank, STATUS
+        from score.student
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="StudentMap">
+        select
+          id, student_num, student_name, class_name, term, course_num, flunk_num, avg_score, all_score, all_credit_score, avg_credit, avg_credit_point, major_rank, STATUS
+        from score.student
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="StudentMap">
+        select
+          id, student_num, student_name, class_name, term, course_num, flunk_num, avg_score, all_score, all_credit_score, avg_credit, avg_credit_point, major_rank, STATUS
+        from score.student
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="studentNum != null and studentNum != ''">
+                and student_num = #{studentNum}
+            </if>
+            <if test="studentName != null and studentName != ''">
+                and student_name = #{studentName}
+            </if>
+            <if test="className != null and className != ''">
+                and class_name = #{className}
+            </if>
+            <if test="term != null and term != ''">
+                and term = #{term}
+            </if>
+            <if test="courseNum != null">
+                and course_num = #{courseNum}
+            </if>
+            <if test="flunkNum != null">
+                and flunk_num = #{flunkNum}
+            </if>
+            <if test="avgScore != null">
+                and avg_score = #{avgScore}
+            </if>
+            <if test="allScore != null">
+                and all_score = #{allScore}
+            </if>
+            <if test="allCreditScore != null">
+                and all_credit_score = #{allCreditScore}
+            </if>
+            <if test="avgCredit != null">
+                and avg_credit = #{avgCredit}
+            </if>
+            <if test="avgCreditPoint != null">
+                and avg_credit_point = #{avgCreditPoint}
+            </if>
+            <if test="majorRank != null">
+                and major_rank = #{majorRank}
+            </if>
+            <if test="status != null">
+                and STATUS = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into student(student_num, student_name, class_name, term, course_num, flunk_num, avg_score, all_score, all_credit_score, avg_credit, avg_credit_point, major_rank, STATUS)
+        values (#{studentNum}, #{studentName}, #{className}, #{term}, #{courseNum}, #{flunkNum}, #{avgScore}, #{allScore}, #{allCreditScore}, #{avgCredit}, #{avgCreditPoint}, #{majorRank}, #{status})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update score.student
+        <set>
+            <if test="studentNum != null and studentNum != ''">
+                student_num = #{studentNum},
+            </if>
+            <if test="studentName != null and studentName != ''">
+                student_name = #{studentName},
+            </if>
+            <if test="className != null and className != ''">
+                class_name = #{className},
+            </if>
+            <if test="term != null and term != ''">
+                term = #{term},
+            </if>
+            <if test="courseNum != null">
+                course_num = #{courseNum},
+            </if>
+            <if test="flunkNum != null">
+                flunk_num = #{flunkNum},
+            </if>
+            <if test="avgScore != null">
+                avg_score = #{avgScore},
+            </if>
+            <if test="allScore != null">
+                all_score = #{allScore},
+            </if>
+            <if test="allCreditScore != null">
+                all_credit_score = #{allCreditScore},
+            </if>
+            <if test="avgCredit != null">
+                avg_credit = #{avgCredit},
+            </if>
+            <if test="avgCreditPoint != null">
+                avg_credit_point = #{avgCreditPoint},
+            </if>
+            <if test="majorRank != null">
+                major_rank = #{majorRank},
+            </if>
+            <if test="status != null">
+                STATUS = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from score.student where id = #{id}
+    </delete>
+
+    <!--查询班级所有学生的总体成绩信息-->
+    <select id="queryAllByClassAndTerm" resultMap="StudentMap1">
+        SELECT id,student_num,student_name,class_name,term,course_num,flunk_num,avg_score,all_score,all_credit_score,avg_credit,avg_credit_point,major_rank,STATUS
+        FROM student
+        WHERE class_name = #{className}
+        AND term = #{term}
+    </select>
+
+    <resultMap type="com.wzxlq.score.entity.Student" id="StudentMap1">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="studentNum" column="student_num" jdbcType="VARCHAR"/>
+        <result property="studentName" column="student_name" jdbcType="VARCHAR"/>
+        <result property="className" column="class_name" jdbcType="VARCHAR"/>
+        <result property="term" column="term" jdbcType="VARCHAR"/>
+        <result property="courseNum" column="course_num" jdbcType="INTEGER"/>
+        <result property="flunkNum" column="flunk_num" jdbcType="INTEGER"/>
+        <result property="avgScore" column="avg_score" jdbcType="NUMERIC"/>
+        <result property="allScore" column="all_score" jdbcType="NUMERIC"/>
+        <result property="allCreditScore" column="all_credit_score" jdbcType="NUMERIC"/>
+        <result property="avgCredit" column="avg_credit" jdbcType="NUMERIC"/>
+        <result property="avgCreditPoint" column="avg_credit_point" jdbcType="NUMERIC"/>
+        <result property="majorRank" column="major_rank" jdbcType="INTEGER"/>
+        <result property="status" column="STATUS" jdbcType="INTEGER"/>
+        <!--学生所有课程信息-->
+        <association property="courseGrades" javaType="java.util.List"
+                     column="{studentNum=student_num,term=term}" select="selectOneGradeByNumAndTerm">
+        </association>
+    </resultMap>
+
+    <!--查询班级所有学生的学生所有课程信息-->
+    <select id="selectOneGradeByNumAndTerm" resultMap="CourseGrade">
+        SELECT course_name,LEVEL,score
+        FROM course_grade
+        WHERE student_num = #{studentNum}
+        AND term = #{term}
+    </select>
+    <resultMap type="com.wzxlq.score.entity.CourseGrade" id="CourseGrade">
+        <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+        <result property="level" column="level" jdbcType="VARCHAR"/>
+        <result property="score" column="score" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="insertAllStudent" parameterType="java.util.List">
+        insert into student (student_num,student_name,class_name,term,course_num,flunk_num,avg_score,all_score,
+        all_credit_score,avg_credit,avg_credit_point,major_rank,STATUS)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.studentNum},#{item.studentName},#{item.className},#{item.term},#{item.courseNum},#{item.flunkNum},
+            #{item.avgScore},#{item.allScore},#{item.allCreditScore},#{item.avgCredit},#{item.avgCreditPoint},#{item.majorRank},
+            #{item.status}
+            )
+        </foreach>
+    </insert>
+    <!--
+     会议基本信息和发单人信息
+    <select id="selectUserById1" resultMap="selectUserByIdResultMap1">
+        select * from send where id = #{id}
+    </select>
+    <resultMap id="selectUserByIdResultMap1" type="top.sxh427.project.meeting.bean.Send">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="meeting_num" property="meetingNum" jdbcType="VARCHAR" />
+        <result column="start_date" property="startDate" jdbcType="VARCHAR" />
+        <result column="lecture_id" property="lectureId" jdbcType="INTEGER" />
+        <result column="lecture_title" property="lectureTitle" jdbcType="VARCHAR" />
+        <result column="zone" property="zone" jdbcType="VARCHAR" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="insert_date" property="insertDate" jdbcType="TIMESTAMP" />
+        <result column="STATUS" property="status" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+         用户基本信息
+        <association property="user" javaType="User" column="user_id" select="selectUserById2">
+
+        </association>
+    </resultMap>
+    <select id="selectUserById2" resultType="User">
+        select * from wuser where id = #{id};
+    </select>
+    -->
+</mapper>

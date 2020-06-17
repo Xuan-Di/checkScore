@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzxlq.score.dao.CourseGradeDao">
+
+    <resultMap type="com.wzxlq.score.entity.CourseGrade" id="CourseGradeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="studentNum" column="student_num" jdbcType="VARCHAR"/>
+        <result property="term" column="term" jdbcType="VARCHAR"/>
+        <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+        <result property="level" column="level" jdbcType="VARCHAR"/>
+        <result property="score" column="score" jdbcType="INTEGER"/>
+        <result property="studentName" column="student_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="CourseGradeMap">
+        select
+          id, student_num, term, course_name, level, score
+        from course_grade
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="CourseGradeMap">
+        select
+          id, student_num, term, course_name, level, score
+        from course_grade
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="CourseGradeMap">
+        select
+        id, work_num, term, course_name, level, score
+        from course_grade
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="studentNum != null and studentNum != ''">
+                and student_num = #{studentNum}
+            </if>
+            <if test="term != null and term != ''">
+                and term = #{term}
+            </if>
+            <if test="courseName != null and courseName != ''">
+                and course_name = #{courseName}
+            </if>
+            <if test="level != null and level != ''">
+                and level = #{level}
+            </if>
+            <if test="score != null">
+                and score = #{score}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into score.course_grade(student_num, term, course_name, level, score)
+        values (#{studentNum}, #{term}, #{courseName}, #{level}, #{score})
+    </insert>
+    <insert id="insertAllGrades" parameterType="java.util.List">
+        insert into course_grade(student_num,term,course_name,level,score)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.studentNum},#{item.term},#{item.courseName},#{item.level},#{item.score})
+        </foreach>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="update">
+        update course_grade
+        <set>
+            <if test="studentNum != null and studentNum != ''">
+                student_num = #{studentNum},
+            </if>
+            <if test="term != null and term != ''">
+                term = #{term},
+            </if>
+            <if test="courseName != null and courseName != ''">
+                course_name = #{courseName},
+            </if>
+            <if test="level != null and level != ''">
+                level = #{level},
+            </if>
+            <if test="score != null">
+                score = #{score},
+            </if>
+        </set>
+        where id #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from score.course_grade where id = #{id}
+    </delete>
+
+    <!--查询不及格名单 &lt;代表< &gt;代表>-->
+    <select id="queryFlunkByClassAndTerm" resultMap="CourseGradeMap">
+        SELECT s.student_name,s.student_num,c.level,c.score,c.course_name
+        FROM student s
+        LEFT JOIN course_grade c
+        ON s.student_num = c.student_num
+        AND s.term = c.term
+        WHERE s.class_name = #{className}
+        AND s.term = #{term}
+        AND (c.score &lt; 60 AND c.level NOT IN('优','良','中','及格','良*','中*','及格*','NULL'))
+        AND s.flunk_num &gt; 0
+        ORDER BY student_num
+    </select>
+
+    <!--查询单科成绩-->
+    <select id="queryOneGradeByClassAndTermAndCourse" resultMap="CourseGradeMap">
+        SELECT s.student_name,s.student_num,c.level,c.score
+        FROM student s
+        LEFT JOIN course_grade c
+        ON s.student_num = c.student_num
+        AND s.term = c.term
+        WHERE s.class_name = #{className}
+        AND c.course_name = #{courseName}
+    </select>
+</mapper>

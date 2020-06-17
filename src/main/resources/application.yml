@@ -1,0 +1,38 @@
+#配置文件，两个配置文件是互补的，我更喜欢yml配置文件
+server:
+  port: 8888
+spring:
+  datasource:
+    #TODO
+    url: jdbc:mysql://106.*.*.*/scoretest?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: 123456789123wzx
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+  #json序列化配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  jmx:
+    enabled: false
+  #redis配置
+  redis:
+    #TODO
+    host: 47.*.*.*
+    #TODO
+    port: 6381
+    jedis:
+      pool:
+        max-active: 1000 # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1 # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10 # 连接池中的最大空闲连接
+        min-idle: 2 # 连接池中的最小空闲连接
+    timeout: 2000 # 连接超时时间（毫秒）
+    #TODO
+#    password: xihuanni  #redis若没有设置密码则要注释该行
+
+mybatis:
+  mapper-locations: classpath:/mapper/*Dao.xml
+  type-aliases-package: com.wzxlq.easycode.entity
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

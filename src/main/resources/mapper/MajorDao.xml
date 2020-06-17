@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzxlq.score.dao.MajorDao">
+
+    <resultMap type="com.wzxlq.score.entity.Major" id="MajorMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="majorName" column="major_name" jdbcType="VARCHAR"/>
+        <result property="grade" column="grade" jdbcType="VARCHAR"/>
+        <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+        <result property="status" column="STATUS" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="MajorMap">
+        select
+          id, major_name, grade, course_name, STATUS
+        from score.major
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="MajorMap">
+        select
+          id, major_name, grade, course_name, STATUS
+        from score.major
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="MajorMap">
+        select
+        id, major_name, grade, course_name, STATUS
+        from score.major
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="majorName != null and majorName != ''">
+                and major_name = #{majorName}
+            </if>
+            <if test="grade != null and grade != ''">
+                and grade = #{grade}
+            </if>
+            <if test="courseName != null and courseName != ''">
+                and course_name = #{courseName}
+            </if>
+            <if test="status != null">
+                and STATUS = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into score.major(major_name, grade, course_name, STATUS)
+        values (#{majorName}, #{grade}, #{courseName}, #{status})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update score.major
+        <set>
+            <if test="majorName != null and majorName != ''">
+                major_name = #{majorName},
+            </if>
+            <if test="grade != null and grade != ''">
+                grade = #{grade},
+            </if>
+            <if test="courseName != null and courseName != ''">
+                course_name = #{courseName},
+            </if>
+            <if test="status != null">
+                STATUS = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from score.major where id = #{id}
+    </delete>
+
+    <!--查询单个-->
+    <select id="queryAllByMajorAndGrade" resultMap="MajorMap">
+        select
+          id, major_name, grade, course_name, STATUS
+        from major
+        where major_name = #{majorName}
+        and grade = #{grade}
+    </select>
+    <select id="queryIsExist" resultType="integer">
+        select count(1)
+        from major
+       where major_name = #{majorName}
+        and grade = #{term}
+    </select>
+    <insert id="insertMajor" parameterType="java.util.List">
+        insert into major(major_name,grade,course_name,STATUS)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.majorName},#{item.grade},#{item.courseName},#{item.status})
+        </foreach>
+    </insert>
+</mapper>
