@@ -14,5 +14,5 @@ https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww9b8c761b26841ee0&red
 ## 第四步：打开插入数据库exe工具输入excel文件目录。第一个行是插入成绩到数据库。第二行是插入老师名单到数据库。
 ### 注意1.两个文件夹目录是独立的，不能一样。2.两个文件夹中不要放入本项目需要的excel之外的其他文件。
 ![图片描述](http://wzxlq.xyz/iword/Snipaste_2020-06-17_16-23-56.png)
-### 注意事项：该项目只能跑在域名为it.bgcloud.top的服务器。端口号8888在项目中已写死，不能改变。
+### 注意事项：该项目只能跑在域名为it.bgcloud.top的服务器。端口号8888在项目中已写死，不能改变。数据库插入工具在任意主机都可以用，数据统一发送到it.bgcloud.top:8888
 ## 完成！
